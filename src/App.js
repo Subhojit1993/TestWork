@@ -1,108 +1,91 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import { render } from "react-dom";
 
-const Form = (props) => {
-  return(
-    <div>
-        <input type="text" placeholder="first name" onChange={props.changeFirstname} value={props.firstname} /> <br/> <br/>
-        <input type="text" placeholder="last name" onChange={props.changeLastname} value={props.lastname} /> <br/> <br/>
-    </div>
-  )
-}
-
-class App extends React.Component {
+class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { 
+    this.state = {
       arr: [
         {
-          firstname: '',
-          lastname: '',
-          id:1
+          firstname: "",
+          lastname: ""
         }
       ],
-      showOutput:false
+      displayValues: []
     };
     this.addTextfields = this.addTextfields.bind(this);
-    this.changeFirstName = this.changeFirstName.bind(this);
-    this.changeLastName = this.changeLastName.bind(this);
+    this.changeFirstname = this.changeFirstname.bind(this);
+    this.changeLastname = this.changeLastname.bind(this);
   }
 
   addTextfields(e) {
-    debugger
-    let oldArray = this.state.arr;
-    this.setState((prevState) => { 
-      return {
-        arr: oldArray.concat({
-          firstname: '',
-          lastname: '',
-          id: prevState.arr.length + 2
-        })
-      }
+    let arr = this.state.arr;
+    arr.push({
+      firstname: "",
+      lastname: ""
     });
+    this.setState({ arr });
   }
 
-  changeFirstName(e, selectedIndex) {
-    let updatedArray =  this.state.arr.map((data) => {
-      if(data.id === selectedIndex) {
-        return Object.assign({}, data, {
-          firstname: e.target.value
-        })
-      } else {
-        return data
-      }
-    })
-
-    this.setState({ arr: updatedArray });
-    
+  changeFirstname(e, index) {
+    let arr = this.state.arr;
+    arr[index].firstname = e.target.value;
+    this.setState({ arr });
   }
 
-  changeLastName(e, selectedIndex) {
-    let updatedArray =  this.state.arr.map((data) => {
-      if(data.id === selectedIndex) {
-        return Object.assign({}, data, {
-          lastname: e.target.value
-        })
-      } else {
-        return data
-      }
-    })
-    this.setState({ arr: updatedArray });
+  changeLastname(e, index) {
+    let arr = this.state.arr;
+    arr[index].lastname = e.target.value;
+    this.setState({ arr });
   }
 
   showTexts() {
-    this.setState({
-      showOutput: true
-    })
+    let displayValues = [];
+    this.state.arr.map(element => {
+      console.log(element.firstname, element.lastname);
+      var add = element.firstname + " " + element.lastname;
+      displayValues.push(add);
+    });
+    this.setState({ displayValues });
   }
 
   render() {
     return (
       <div>
         <div className="App">
-          {
-            this.state.arr.map((data, index) => {
-              return <Form key={index} data={data} 
-                      changeFirstname={(e) => this.changeFirstName(e, data.id)}
-                      changeLastname={(e) => this.changeLastName(e, data.id)}
-                    />
-            })
-          }
-          <button type="submit" onClick={this.addTextfields}>Plus</button> 
+          {this.state.arr.map((element, index) => {
+            return (
+              <div key={index}>
+                <input
+                  type="text"
+                  onChange={e => this.changeFirstname(e, index)}
+                  placeholder="first name"
+                  value={this.state.firstname}
+                />{" "}
+                <br /> <br />
+                <input
+                  type="text"
+                  onChange={e => this.changeLastname(e, index)}
+                  placeholder="last name"
+                  value={this.state.lastname}
+                />{" "}
+                <br /> <br />
+              </div>
+            );
+          })}
+          <button type="submit" onClick={this.addTextfields}>
+            Plus
+          </button>
         </div>
         <div className="submit-button">
-          <button type="submit" onClick={this.showTexts.bind(this)}>Submit</button>
+          <button type="submit" onClick={this.showTexts.bind(this)}>
+            Submit
+          </button>
         </div>
         <div>
-          {
-            this.state.showOutput && 
-            this.state.arr.map((data, index) => {
-              return <div key={index}>
-              {data.firstname}  {data.lastname}
-              </div>
-            })
-          }
+          {this.state.displayValues.map(element => {
+            return <p>{element}</p>;
+          })}
         </div>
       </div>
     );
